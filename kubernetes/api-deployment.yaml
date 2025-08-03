@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.36.0 (ae2a39403)
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.36.0 (ae2a39403)
+      labels:
+        app: backend
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE__ENVIRONMENT
+              value: Production
+            - name: AppSettings__Audience
+              value: http://localhost:8000
+            - name: AppSettings__ConnectionStrings__DefaultConnection
+              value: Host=postgres;Port=5432;Database=Contacts;Username=sa;Password=PasYourPassword123
+            - name: AppSettings__Issuer
+              value: http://localhost:8000
+            - name: AppSettings__PasswordResetUrl
+              value: http://localhost/reset-password/
+            - name: AppSettings__Secret
+              value: THIS  USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING
+            - name: SmtpSettings__EnableSsl
+              value: "true"
+            - name: SmtpSettings__FromEmail
+              value: xxxxxxxx@hotmail.com
+            - name: SmtpSettings__Password
+              value: xxxxxx
+            - name: SmtpSettings__Port
+              value: "587"
+            - name: SmtpSettings__SmtpServer
+              value: smtp.office365.com
+            - name: SmtpSettings__Username
+              value: xxxxxxxx@hotmail.com
+          image: nippy/api:latest
+          name: api
+      restartPolicy: Always
